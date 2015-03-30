@@ -4,6 +4,7 @@ import (
         "github.com/shirou/gopsutil/cpu"
         "time"
         "strconv"
+        "math"
 )
 
 func GetCPUStats(t time.Time) (cpuLabels []string, cpuPercents []int) {
@@ -11,8 +12,9 @@ func GetCPUStats(t time.Time) (cpuLabels []string, cpuPercents []int) {
         cpuP, _ := cpu.CPUPercent(time.Since(t), true)
 
         for i := 0; i < len(cpuP); i++ {
-                cpuPercents[i] = int(100 * cpuP[i])
-                cpuLabels[i] = strconv.Itoa(i)
+                perc := int(math.Ceil(cpuP[i]))
+                cpuPercents = append(cpuPercents, perc)
+                cpuLabels = append(cpuLabels, " # " + strconv.Itoa(i+1))
         }
 
         if len(cpuP) == 0 {
